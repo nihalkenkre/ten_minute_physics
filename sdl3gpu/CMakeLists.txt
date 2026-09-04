@@ -1,4 +1,4 @@
-project(tmp_sdlgpu3 LANGUAGES C CXX)
+project(tmp_sdl3gpu LANGUAGES C CXX)
 
 file(GLOB PROJECT_SRCS src/c/* src/gui.cpp)
 list(FILTER PROJECT_SRCS EXCLUDE REGEX "imgui.ini")
