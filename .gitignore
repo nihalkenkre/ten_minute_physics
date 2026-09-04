@@ -1,0 +1,47 @@
+# CMake build directories
+build/
+bin/
+lib/
+out/
+.vs/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+compile_commands.json
+
+# IDE specific files (common for C++ development)
+*.swp
+*.bak
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.exp
+*.ilk
+*.pdb
+*.suo
+*.user
+*.ncb
+*.aps
+*.opensdf
+*.sdf
+*.ipch
+
+# macOS specific files
+.DS_Store
+
+# Windows specific files
+Thumbs.db
+
+# ImGui
+imgui.ini
+
+# SPIRV
+*.spv

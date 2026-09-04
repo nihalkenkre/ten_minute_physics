@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+project(ten_minute_physics)
+add_subdirectory(tmp_vk)
+add_subdirectory(tmp_gl)
+add_subdirectory(sdlgpu3)

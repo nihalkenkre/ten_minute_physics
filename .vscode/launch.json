@@ -1,0 +1,14 @@
+{
+   "configurations": [
+      {
+         "name": "(Windows) Launch",
+         "type": "cppvsdbg",
+         "request": "launch",
+         "program": "${workspaceFolder}/build/Debug/ten_minute_physics.exe",
+         "stopAtEntry": false,
+         "cwd": "${fileDirname}",
+         "console": "integratedTerminal",
+         "preLaunchTask": "Build Debug",
+      },
+   ]
+}

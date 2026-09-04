@@ -1,0 +1,36 @@
+{
+   "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "Build MinSizeRel",
+         "type": "shell",
+         "group": {
+            "kind": "build",
+         },
+         "command": "MSBuild.exe",
+         "args": [
+            "-p:Configuration=MinSizeRel",
+            "./build/ten_minute_physics.slnx"
+         ],
+      },
+      {
+         "label": "Build Debug",
+         "type": "shell",
+         "group": {
+            "kind": "build",
+         },
+         "command": "MSBuild.exe",
+         "args": [
+            "-p:Configuration=Debug",
+            "./build/ten_minute_physics.slnx"
+         ],
+      },
+      {
+         "label": "Execute MinSizeRel",
+         "type": "shell",
+         "group": "build",
+         "command": "${workspaceFolder}/build/MinSizeRel/ten_minute_physics.exe",
+         "dependsOn": "Build MinSizeRel"
+      },
+   ]
+}

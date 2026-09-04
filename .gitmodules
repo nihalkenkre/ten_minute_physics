@@ -1,0 +1,21 @@
+[submodule "cglm"]
+	path = cglm
+	url = git@github.com:recp/cglm.git
+[submodule "cgltf"]
+	path = cgltf
+	url = git@github.com:jkuhlmann/cgltf.git
+[submodule "tmp_vk/volk"]
+	path = tmp_vk/volk
+	url = git@github.com:zeux/volk.git
+[submodule "tmp_vk/vma"]
+	path = tmp_vk/vma
+	url = git@github.com:GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
+[submodule "SDL"]
+	path = SDL
+	url = git@github.com:libsdl-org/SDL
+[submodule "imgui"]
+	path = imgui
+	url = git@github.com:ocornut/imgui.git
+[submodule "imguifiledialog"]
+	path = imguifiledialog
+	url = git@github.com:aiekick/imguifiledialog.git
