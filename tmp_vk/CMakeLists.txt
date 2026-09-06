@@ -30,7 +30,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 17)
 #                                       <glm/ext/matrix_transform.hpp>
 #                                       <glm/gtc/type_ptr.hpp>
 #                          )
-target_include_directories(${PROJECT_NAME} PRIVATE ../SDL/include ../imgui ../imgui/backends ../ImGuiFileDialog ../glm ../cglm/include ../cgltf ../stb src/c ../../Vulkan-Headers/include. volk vma/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ../SDL/include ../imgui ../imgui/backends ../ImGuiFileDialog ../glm ../cglm/include ../cgltf ../stb src/c ../Vulkan-Headers/include. volk vma/include)
 
 target_link_directories(${PROJECT_NAME} PRIVATE $<IF:$<CONFIG:Debug>,${CMAKE_SOURCE_DIR}/SDL/build/Debug,> $<IF:$<CONFIG:MinSizeRel>,${CMAKE_SOURCE_DIR}/SDL/build/MinSizeRel,>)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3-static winmm imm32 setupapi version)

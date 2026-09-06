@@ -19,3 +19,6 @@
 [submodule "imguifiledialog"]
 	path = imguifiledialog
 	url = git@github.com:aiekick/imguifiledialog.git
+[submodule "Vulkan-Headers"]
+	path = Vulkan-Headers
+	url = git@github.com:KhronosGroup/Vulkan-Headers.git
