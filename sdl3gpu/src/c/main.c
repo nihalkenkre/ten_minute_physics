@@ -8,15 +8,13 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char** argv)
 {
     SDL_CHECK(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
-    App* app = SDL_malloc(sizeof(App));
-    app->window = SDL_CreateWindow("Ten Minute Physics", 1280, 720, SDL_WINDOW_RESIZABLE);
-    SDL_CHECK(app->window);
-    app->device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, false, NULL);
-    SDL_CHECK(app->device);
-
-    SDL_CHECK(SDL_ClaimWindowForGPUDevice(app->device, app->window));
-
+    SDL_Window* window = SDL_CreateWindow("Ten Minute Physics", 1280, 720, SDL_WINDOW_RESIZABLE);
+    SDL_CHECK(window);
+    SDL_GPUDevice* device = SDL_CreateGPUDevice(SDL_GPU_SHADERFORMAT_SPIRV, false, NULL);
+    SDL_CHECK(device);
+    App* app = App_create(window, device);
     *appstate = app;
+
     return SDL_APP_CONTINUE;
 }
 
@@ -40,8 +38,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     if (SDL_GetWindowFlags(app->window) & SDL_WINDOW_MINIMIZED)
         return SDL_APP_CONTINUE;
 
-    App_simulate(app);
-    App_render(app);
+    App_iterate(app);
 
     return SDL_APP_CONTINUE;
 }
@@ -49,9 +46,6 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     App* app = (App*)(appstate);
-
-    SDL_ReleaseWindowFromGPUDevice(app->device, app->window);
-    SDL_DestroyWindow(app->window);
 
     App_destroy(app);
 

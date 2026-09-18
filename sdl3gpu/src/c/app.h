@@ -1,10 +1,12 @@
 #pragma once
 
 #include <SDL3/SDL.h>
+#include "gui.h"
 
 typedef struct _App {
     SDL_Window* window;
     SDL_GPUDevice* device;
+    GUI* gui;
 } App;
 
 App* App_create(SDL_Window* window, SDL_GPUDevice* device);

@@ -10,7 +10,7 @@
          "command": "MSBuild.exe",
          "args": [
             "-p:Configuration=MinSizeRel",
-            "./build/ten_minute_physics.slnx"
+            "./build/ten_minute_physics.sln"
          ],
       },
       {
@@ -22,7 +22,7 @@
          "command": "MSBuild.exe",
          "args": [
             "-p:Configuration=Debug",
-            "./build/ten_minute_physics.slnx"
+            "./build/ten_minute_physics.sln"
          ],
       },
       {

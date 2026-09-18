@@ -1,6 +1,6 @@
 project(tmp_sdl3gpu LANGUAGES C CXX)
 
-file(GLOB PROJECT_SRCS src/c/* src/gui.cpp)
+file(GLOB PROJECT_SRCS src/c/* src/cpp/gui.cpp)
 list(FILTER PROJECT_SRCS EXCLUDE REGEX "imgui.ini")
 file(GLOB IMGUI_SRCS ../imgui/*.cpp ../imgui/*.h ../imgui/backends/imgui_impl_sdl3.* ../imgui/backends/imgui_impl_sdlgpu3.*)
 file(GLOB IMGUI_FILE_DLG_SRCS ../ImGuiFileDialog/ImGuiFileDialog*.h ../ImGuiFileDialog/ImGuiFileDialog*.cpp)
@@ -33,3 +33,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ../SDL/include ../imgui ../im
 
 target_link_directories(${PROJECT_NAME} PRIVATE $<IF:$<CONFIG:Debug>,${CMAKE_SOURCE_DIR}/SDL/build/Debug,> $<IF:$<CONFIG:MinSizeRel>,${CMAKE_SOURCE_DIR}/SDL/build/MinSizeRel,>)
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL3-static winmm imm32 setupapi version)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+   add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python ${PROJECT_SOURCE_DIR}/build_slang.py ${PROJECT_SOURCE_DIR} $<CONFIG> $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+endif()
