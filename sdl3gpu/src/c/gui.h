@@ -10,7 +10,6 @@ typedef struct _GUI
 
 #ifdef __cplusplus
 extern "C" {
-
 #endif
 
 	GUI* GUI_create(SDL_Window* window, SDL_GPUDevice* device);

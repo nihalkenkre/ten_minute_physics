@@ -1,4 +1,6 @@
 #include "gui.h"
+#include "events.h"
+#include "utils.h"
 
 #include <SDL3/SDL.h>
 #include <memory>
@@ -6,6 +8,7 @@
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
 #include <imgui_impl_sdlgpu3.h>
+#include <ImGuiFileDialog.h>
 
 
 GUI* GUI_create(SDL_Window* window, SDL_GPUDevice* device)
@@ -45,11 +48,36 @@ void GUI_render(GUI* gui, SDL_GPUCommandBuffer* command_buffer, const SDL_GPUCol
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow();
+	ImGui::Begin("Awesome Panel");
+	ImGui::Text("Frame time: %0.3f ms", 1000.f / ImGui::GetIO().Framerate);
+
+	if (ImGui::Button("Load GLTF"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+
+		ImGuiFileDialog::Instance()->OpenDialog("GLTFDlg", "Choose GLTF File", ".gltf,.glb", config);
+	}
+
+	if (ImGuiFileDialog::Instance()->Display("GLTFDlg"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+
+			events.FileOpen.user.data1 = reinterpret_cast<void*>((char*)file_path.c_str());
+			SDL_CHECK(SDL_PushEvent(&events.FileOpen));
+		}
+
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+	ImGui::End();
 
 	ImGui::Render();
 	ImDrawData* draw_data = ImGui::GetDrawData();
 	ImGui_ImplSDLGPU3_PrepareDrawData(draw_data, command_buffer);
+
 	SDL_GPURenderPass* render_pass = SDL_BeginGPURenderPass(command_buffer, target_info, 1, nullptr);
 	ImGui_ImplSDLGPU3_RenderDrawData(draw_data, command_buffer, render_pass);
 	SDL_EndGPURenderPass(render_pass);
