@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 #include <memory>
 
+#include <imnodes.h>
 #include <imgui.h>
 #include <imgui_impl_sdl3.h>
 #include <imgui_impl_sdlgpu3.h>
@@ -15,6 +16,10 @@ GUI* GUI_create(SDL_Window* window, SDL_GPUDevice* device)
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImNodes::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
 	ImGui_ImplSDL3_InitForSDLGPU(window);
 
 	ImGui_ImplSDLGPU3_InitInfo init_info = {
@@ -74,19 +79,50 @@ void GUI_render(GUI* gui, SDL_GPUCommandBuffer* command_buffer, const SDL_GPUCol
 
 	ImGui::End();
 
+	ImGui::Begin("Nodes");
+	ImNodes::BeginNodeEditor();
+
+	ImNodes::BeginNode(1);
+	ImNodes::BeginNodeTitleBar();
+	ImGui::TextUnformatted("Simple node");
+	ImNodes::EndNodeTitleBar();
+
+	ImNodes::BeginInputAttribute(2);
+	ImGui::Text("input");
+	ImNodes::EndInputAttribute();
+
+	ImNodes::BeginOutputAttribute(3);
+	ImGui::Indent(40);
+	ImGui::Text("output");
+	ImNodes::EndOutputAttribute();
+	ImNodes::EndNode();
+
+	ImNodes::EndNodeEditor();
+	ImGui::End();
+	ImGui::EndFrame();
 	ImGui::Render();
+
 	ImDrawData* draw_data = ImGui::GetDrawData();
 	ImGui_ImplSDLGPU3_PrepareDrawData(draw_data, command_buffer);
 
 	SDL_GPURenderPass* render_pass = SDL_BeginGPURenderPass(command_buffer, target_info, 1, nullptr);
 	ImGui_ImplSDLGPU3_RenderDrawData(draw_data, command_buffer, render_pass);
 	SDL_EndGPURenderPass(render_pass);
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
 }
 
 void GUI_destroy(GUI* gui)
 {
 	ImGui_ImplSDL3_Shutdown();
 	ImGui_ImplSDLGPU3_Shutdown();
+	ImNodes::DestroyContext();
 	ImGui::DestroyContext();
 
 	if (gui != nullptr)

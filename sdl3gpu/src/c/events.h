@@ -4,17 +4,17 @@
 
 typedef struct _Events
 {
-	SDL_Event FileOpen = {};
-	SDL_Event StartRender = {};
-	SDL_Event StopRender = {};
+	SDL_Event FileOpen;
+	SDL_Event StartRender;
+	SDL_Event StopRender;
 
-	SDL_Event RenderDimsChanged = {};
+	SDL_Event RenderDimsChanged;
 
-	SDL_Event RenderStarted = {};
-	SDL_Event RenderStopped = {};
+	SDL_Event RenderStarted;
+	SDL_Event RenderStopped;
 
-	SDL_Event RenderSampleDone = {};
-	SDL_Event ReloadShaders = {};
+	SDL_Event RenderSampleDone;
+	SDL_Event ReloadShaders;
 } Events;
 
 #ifdef __cplusplus

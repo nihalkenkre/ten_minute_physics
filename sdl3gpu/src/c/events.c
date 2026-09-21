@@ -1,7 +1,7 @@
 #include "events.h"
 #include "utils.h"
 
-Events events = {};
+Events events;
 
 void Events_Initialize()
 {
@@ -23,6 +23,6 @@ void Events_Initialize()
 		e < (uint8_t*)(&events) + sizeof(events);
 		e += sizeof(SDL_Event))
 	{
-		(SDL_Event*)(e)->type = id++;
+		((SDL_Event*)(e))->type = id++;
 	}
 }
