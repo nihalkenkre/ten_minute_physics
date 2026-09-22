@@ -1,41 +1,50 @@
 #include "app.h"
 #include "utils.h"
 #include "gui.h"
+#include "events.h"
+#include "scene.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
+typedef struct _App {
+    SDL_Window* window;
+    SDL_GPUDevice* device;
+} App;
 
-App* App_create(SDL_Window* window, SDL_GPUDevice* device)
+static App app;
+
+void App_create(SDL_Window* window, SDL_GPUDevice* device)
 {
-	App* app = SDL_calloc(1, sizeof(App));
-
     SDL_CHECK(SDL_ClaimWindowForGPUDevice(device, window));
     SDL_CHECK(SDL_SetGPUSwapchainParameters(device, window, SDL_GPU_SWAPCHAINCOMPOSITION_SDR, SDL_GPU_PRESENTMODE_MAILBOX));
 
-	app->window = window;
-	app->device = device;
-	app->gui = GUI_create(window, device);
-
-	return app;
+	app.window = window;
+	app.device = device;
+	GUI_create(window, device);
 }
 
-void App_event(App* app, SDL_Event* event)
+void App_event(SDL_Event* event)
 {
-	if (GUI_process_event(app->gui, event)) return;
+	bool imgui_want_focus = GUI_process_event(event);
+
+	if (event->type == events.FileOpen.type) 
+	{
+		Scene_create(event->user.data1);
+	}
 }
 
-void App_simulate(App* app)
+void App_simulate()
 {
 }
 
-void App_render(App* app)
+void App_render()
 {
-	SDL_GPUCommandBuffer* command_buffer = SDL_AcquireGPUCommandBuffer(app->device);
+	SDL_GPUCommandBuffer* command_buffer = SDL_AcquireGPUCommandBuffer(app.device);
 	SDL_CHECK(command_buffer);
 
 	SDL_GPUTexture* sc_image = NULL;
-	SDL_CHECK(SDL_WaitAndAcquireGPUSwapchainTexture(command_buffer, app->window, &sc_image, NULL, NULL));
+	SDL_CHECK(SDL_WaitAndAcquireGPUSwapchainTexture(command_buffer, app.window, &sc_image, NULL, NULL));
 
 	const SDL_GPUColorTargetInfo target_info = {
 		.texture = sc_image,
@@ -48,28 +57,21 @@ void App_render(App* app)
 	SDL_GPURenderPass* render_pass = SDL_BeginGPURenderPass(command_buffer, &target_info, 1, NULL);
 	SDL_EndGPURenderPass(render_pass);
 
-	GUI_render(app->gui, command_buffer, &target_info);
+	GUI_render(command_buffer, &target_info);
 
 	SDL_SubmitGPUCommandBuffer(command_buffer);
 }
 
-void App_iterate(App* app)
+void App_iterate()
 {
-	App_simulate(app);
-	App_render(app);
+	App_simulate();
+	App_render();
 }
 
-void App_destroy(App* app)
+void App_destroy()
 {
-	if (app != NULL)
-	{
-		GUI_destroy(app->gui);
-		SDL_CHECK(SDL_WaitForGPUIdle(app->device));
+	SDL_CHECK(SDL_WaitForGPUIdle(app.device));
 
-		SDL_ReleaseWindowFromGPUDevice(app->device, app->window);
-		SDL_DestroyGPUDevice(app->device);
-		SDL_DestroyWindow(app->window);
-
-		SDL_free(app);
-	}
+	GUI_destroy();
+	Scene_destroy();
 }

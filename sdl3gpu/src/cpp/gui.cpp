@@ -11,8 +11,16 @@
 #include <imgui_impl_sdlgpu3.h>
 #include <ImGuiFileDialog.h>
 
+typedef struct _GUI
+{
+	SDL_Window* window;
+	SDL_GPUDevice* device;
+} GUI;
 
-GUI* GUI_create(SDL_Window* window, SDL_GPUDevice* device)
+static GUI gui;
+static std::string file_path = "";
+
+void GUI_create(SDL_Window* window, SDL_GPUDevice* device)
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -32,14 +40,11 @@ GUI* GUI_create(SDL_Window* window, SDL_GPUDevice* device)
 
 	ImGui_ImplSDLGPU3_Init(&init_info);
 
-	GUI* gui = reinterpret_cast<GUI*>(std::calloc(1, sizeof(GUI)));
-	gui->window = window;
-	gui->device = device;
-
-	return gui;
+	gui.window = window;
+	gui.device = device;
 }
 
-bool GUI_process_event(GUI* gui, SDL_Event* event)
+bool GUI_process_event(SDL_Event* event)
 {
 	ImGui_ImplSDL3_ProcessEvent(event);
 
@@ -47,7 +52,7 @@ bool GUI_process_event(GUI* gui, SDL_Event* event)
 	return io.WantCaptureMouse || io.WantCaptureKeyboard;
 }
 
-void GUI_render(GUI* gui, SDL_GPUCommandBuffer* command_buffer, const SDL_GPUColorTargetInfo* target_info)
+void GUI_render(SDL_GPUCommandBuffer* command_buffer, const SDL_GPUColorTargetInfo* target_info)
 {
 	ImGui_ImplSDLGPU3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
@@ -68,7 +73,7 @@ void GUI_render(GUI* gui, SDL_GPUCommandBuffer* command_buffer, const SDL_GPUCol
 	{
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
-			std::string file_path = ImGuiFileDialog::Instance()->GetFilePathName();
+			file_path = ImGuiFileDialog::Instance()->GetFilePathName();
 
 			events.FileOpen.user.data1 = reinterpret_cast<void*>((char*)file_path.c_str());
 			SDL_CHECK(SDL_PushEvent(&events.FileOpen));
@@ -118,15 +123,10 @@ void GUI_render(GUI* gui, SDL_GPUCommandBuffer* command_buffer, const SDL_GPUCol
 	}
 }
 
-void GUI_destroy(GUI* gui)
+void GUI_destroy()
 {
 	ImGui_ImplSDL3_Shutdown();
 	ImGui_ImplSDLGPU3_Shutdown();
 	ImNodes::DestroyContext();
 	ImGui::DestroyContext();
-
-	if (gui != nullptr)
-	{
-		std::free(gui);
-	}
 }
